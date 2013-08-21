@@ -50,6 +50,12 @@ def prompt(question)
   gets.chomp
 end
 
+def game_play (score, limit)
+  score < limit
+end
+
+correct_input = ["h","s"]
+
 player = "Player"
 dealer = "Dealer"
 
@@ -58,15 +64,15 @@ dealer_cards = []
 
 deck = build_deck
 
-# Takes the next card from the top of the deck.
+ 
+# Player is dealt a card (x2)
+
 2.times do
   player_cards << deck.pop
   dealer_cards << deck.pop
 end
-
-# player_cards << 'A♠'
-# puts player_cards.inspect
-# puts dealer_cards.inspect
+ 
+# Display inital hand
 
 player_total = calculate_value(player_cards)
 dealer_total = calculate_value(dealer_cards)
@@ -75,95 +81,74 @@ show_card(player, player_cards[0])
 show_card(player, player_cards[1])
 show_total(player, player_total)
 
+# Prompt player to hit or stand 
 
-if player_total == 21
-  puts "you win" 
-  exit
-elsif player_total > 21
-  puts "you lose"
-end
-
-correct_input = ["H","S"]
-# Prompt player to hit or stand until they stand or bust
-
-  next_turn = prompt("[H]it or [S]tay?")
-
-
-def game_play (score, limit)
-  score < limit
-end
-
-  # If input is invalid (neither hit or stand) notify and reprompt
-    if !correct_input.include?(next_turn)    
-      puts "Invalid input, please put either H for hit or S for stay."
-    elsif next_turn == "H"
-      while game_play(player_total, 21)
-        # If player hits deal another card
-        new_card = deck.pop
-        player_cards << new_card
-        show_card(player, player_cards[-1])
-        player_total = calculate_value(player_cards)
-        # Display player's score after they hit or stand
-        show_total(player, player_total)
-        puts "Player Busts" if player_total > 21
+next_turn = nil
+while next_turn != "s"
+  next_turn = prompt("[h]it or [s]tay?")
+# If input is invalid (neither hit or stand) notify and reprompt
+  if !correct_input.include?(next_turn)    
+    puts "Invalid input, please put either h for hit or s for stay."
+  elsif next_turn == "h"
+# If player hits deal another card
+    new_card = deck.pop
+    player_cards << new_card
+    show_card(player, player_cards[-1])
+# Display player's recalculated score
+    player_total = calculate_value(player_cards)
+    show_total(player, player_total)
+    puts ''
+# If player busts then exit game
+      if player_total > 21
+        puts "Player bust"
+        puts "Dealer wins"
+        break
       end
-    elsif next_turn == "S"
-      # Display player's recalculated score
-      show_total(player, player_total)
-    end
-
-show_card(dealer, dealer_cards[0])
-show_card(dealer, dealer_cards[1])
-show_total(dealer, dealer_total)
-
-if dealer_total == 21
-  puts "you win" 
-  
-elsif dealer_total > 21
-  puts "you lose"
-end
-
-      while game_play(dealer_total, 17)
-        # If player hits deal another card
-        new_card = deck.pop
-        dealer_cards << new_card
-        show_card(dealer, dealer_cards[-1])
-        dealer_total = calculate_value(dealer_cards)
-        # Display player's score after they hit or stand
-        show_total(dealer, dealer_total)
-        puts "Dealer Busts" if dealer_total > 21
-      end
-
-
-
-if dealer_total == 21
-  puts "Dealer wins"
-elsif dealer_total > player_total
-  puts "Dealer wins"
-else
-  puts "Player wins"
-end
-
-
-
-      # If player busts then exit game
-
+  elsif next_turn == "s"
   # If player stands
-
+ 
     # Display player's recalculated score
+    player_total = calculate_value(player_cards)
+    show_total(player, player_total)
+ # End players turn and switch to dealer
+ # Dealer is dealt 2 cards
+    puts ''
+    puts "Dealer's turn"
+    show_card(dealer, dealer_cards[0])
+    show_card(dealer, dealer_cards[1])
+    show_total(dealer, dealer_total)
 
-    # End players turn and switch to dealer
+    while game_play(dealer_total, 17)
+      new_card = deck.pop
+      dealer_cards << new_card
+      show_card(dealer, dealer_cards[-1])
+      dealer_total = calculate_value(dealer_cards)
+      # Display player's score after they hit or stand
+      show_total(dealer, dealer_total)
+      puts ''
+    end
+    if dealer_total >21
+      puts "Dealer busts, player wins"
+    elsif dealer_total > player_total
+      puts "Dealer wins"
+    elsif dealer_total == player_total
+      puts "It's a tie!"
+    end
+  end
 
-      # Dealer is dealt 2 cards
+end
 
+
+
+ 
       # If dealer score is less than 17
-
+ 
         # Continue hitting until score over 17
-
+ 
       # If dealer score is greater than 21
-
+ 
         # Dealer loses
-
+ 
 # If score equals 21, they win
-
+ 
 # If score less than 21, player with the higher score wins
