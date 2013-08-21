@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
-require 'pry'
+# require 'pry'
 
 SUITS = ['♠', '♣', '♥', '♦']
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
@@ -45,6 +45,11 @@ def show_total(player, total)
   puts "#{player}'s total is: #{total}"
 end
 
+def prompt(question)
+  puts question
+  gets.chomp
+end
+
 player = "Player"
 dealer = "Dealer"
 
@@ -53,14 +58,15 @@ dealer_cards = []
 
 deck = build_deck
 
+# Takes the next card from the top of the deck.
 2.times do
   player_cards << deck.pop
   dealer_cards << deck.pop
 end
 
-player_cards << 'A♠'
-puts player_cards.inspect
-puts dealer_cards.inspect
+# player_cards << 'A♠'
+# puts player_cards.inspect
+# puts dealer_cards.inspect
 
 player_total = calculate_value(player_cards)
 dealer_total = calculate_value(dealer_cards)
@@ -69,42 +75,76 @@ show_card(player, player_cards[0])
 show_card(player, player_cards[1])
 show_total(player, player_total)
 
-while player_total < 21
-  puts "[H]it or [S]tay?"
-  next_turn = gets.chomp
-  if next_turn == "H"
-    new_card = deck.pop
-    player_cards << new_card
-    show_card(player, player_cards[-1])
-    player_total = calculate_value(player_cards)
-    show_total(player, player_total)
-    puts "Player Busts" if player_total > 21
-  end
+
+if player_total == 21
+  puts "you win" 
+  exit
+elsif player_total > 21
+  puts "you lose"
 end
+
+correct_input = ["H","S"]
+# Prompt player to hit or stand until they stand or bust
+
+  next_turn = prompt("[H]it or [S]tay?")
+
+
+def game_play (score, limit)
+  score < limit
+end
+
+  # If input is invalid (neither hit or stand) notify and reprompt
+    if !correct_input.include?(next_turn)    
+      puts "Invalid input, please put either H for hit or S for stay."
+    elsif next_turn == "H"
+      while game_play(player_total, 21)
+        # If player hits deal another card
+        new_card = deck.pop
+        player_cards << new_card
+        show_card(player, player_cards[-1])
+        player_total = calculate_value(player_cards)
+        # Display player's score after they hit or stand
+        show_total(player, player_total)
+        puts "Player Busts" if player_total > 21
+      end
+    elsif next_turn == "S"
+      # Display player's recalculated score
+      show_total(player, player_total)
+    end
 
 show_card(dealer, dealer_cards[0])
 show_card(dealer, dealer_cards[1])
 show_total(dealer, dealer_total)
 
+if dealer_total == 21
+  puts "you win" 
+  
+elsif dealer_total > 21
+  puts "you lose"
+end
+
+      while game_play(dealer_total, 17)
+        # If player hits deal another card
+        new_card = deck.pop
+        dealer_cards << new_card
+        show_card(dealer, dealer_cards[-1])
+        dealer_total = calculate_value(dealer_cards)
+        # Display player's score after they hit or stand
+        show_total(dealer, dealer_total)
+        puts "Dealer Busts" if dealer_total > 21
+      end
 
 
 
+if dealer_total == 21
+  puts "Dealer wins"
+elsif dealer_total > player_total
+  puts "Dealer wins"
+else
+  puts "Player wins"
+end
 
 
-
-
-
-# Takes the next card from the top of the deck.
-
-# Prompt player to hit or stand until they stand or bust
-
-# Display player's score after they hit or stand
-
-  # If input is invalid (neither hit or stand) notify and reprompt
-
-  # If player hits deal another card
-
-    # Display player's recalculated score
 
       # If player busts then exit game
 
