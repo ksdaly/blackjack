@@ -59,19 +59,24 @@ dealer_total = calculate_value(dealer_cards)
 
 def show_card(player, card)
   puts "#{player} was dealt: #{card}"
+end
 
+def show_total(player, total)
+  puts "#{player}'s total is: #{total}"
 end
 
 show_card("Player", player_cards[0])
 show_card("Player", player_cards[1])
+show_total("Player", player_total)
 # puts "Player was dealt: #{player_cards[0]}"
 # puts "Player was dealt: #{player_cards[1]}"
-puts "Player's total is: #{player_total}"
+# puts "Player's total is: #{player_total}"
 
 
-puts "Sealer was dealt: #{dealer_cards[0]}"
-puts "Dealer was dealt: #{dealer_cards[1]}"
-puts "Dealer's total is: #{dealer_total}"
+show_card("Dealer", dealer_cards[0])
+show_card("Dealer", dealer_cards[1])
+show_total("Dealer", dealer_total)
+
 
 while player_total < 21
   puts "[H]it or [S]tay?"
