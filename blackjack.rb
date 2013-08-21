@@ -65,17 +65,20 @@ def show_total(player, total)
   puts "#{player}'s total is: #{total}"
 end
 
-show_card("Player", player_cards[0])
-show_card("Player", player_cards[1])
-show_total("Player", player_total)
+player = "Player"
+dealer = "Dealer"
+
+show_card(player, player_cards[0])
+show_card(player, player_cards[1])
+show_total(player, player_total)
 # puts "Player was dealt: #{player_cards[0]}"
 # puts "Player was dealt: #{player_cards[1]}"
 # puts "Player's total is: #{player_total}"
 
 
-show_card("Dealer", dealer_cards[0])
-show_card("Dealer", dealer_cards[1])
-show_total("Dealer", dealer_total)
+show_card(dealer, dealer_cards[0])
+show_card(dealer, dealer_cards[1])
+show_total(dealer, dealer_total)
 
 
 while player_total < 21
