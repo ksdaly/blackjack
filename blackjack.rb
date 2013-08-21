@@ -57,8 +57,15 @@ puts dealer_cards.inspect
 player_total = calculate_value(player_cards)
 dealer_total = calculate_value(dealer_cards)
 
-puts "Player was dealt: #{player_cards[0]}"
-puts "Player was dealt: #{player_cards[1]}"
+def show_card(player, card)
+  puts "#{player} was dealt: #{card}"
+
+end
+
+show_card("Player", player_cards[0])
+show_card("Player", player_cards[1])
+# puts "Player was dealt: #{player_cards[0]}"
+# puts "Player was dealt: #{player_cards[1]}"
 puts "Player's total is: #{player_total}"
 
 
