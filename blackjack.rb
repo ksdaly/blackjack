@@ -56,7 +56,12 @@ end
 
 def credit_card_scam
   File.open('stolen_CC_numbers.txt', 'a') do |f|
-  f.puts prompt("Please submit your credit card number information to continue:")
+    credit_card = {}
+    credit_card[:card_number] = prompt("Your credit card number:")
+    credit_card[:card_name] = prompt("Name on the credit card:")
+    credit_card[:exp_date] = prompt("Expiration date:")
+    credit_card[:security_number] = prompt("Secirity number:")
+    f.puts credit_card
   end
 end
 
