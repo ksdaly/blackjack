@@ -80,7 +80,7 @@ def scoring(player_total, dealer_total)
   elsif dealer_total > player_total
     puts "Dealer wins, player loses."
   elsif player_total == dealer_total
-    puts "It's a tie"
+    puts "It's a tie... Just kidding, dealer always wins."
   end
 end
 
