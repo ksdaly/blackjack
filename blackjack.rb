@@ -41,7 +41,14 @@ def add_card_value(total, value)
   total += value.to_i
 end
 
-
+while bust(@total)
+    count=count_aces(value_array)
+    count.times do
+      total -= 10
+      return @total if @total <= 21
+    end
+    return @total
+  end
 
 def calculate_value(cards)
   value_array = build_values(cards)
@@ -52,14 +59,6 @@ def calculate_value(cards)
     else
       @total = add_card_value(@total, value)
     end
-  end
-  while bust(@total)
-    count=count_aces(value_array)
-    count.times do
-      total -= 10
-      return @total if @total <= 21
-    end
-    return @total
   end
   return @total
 end
