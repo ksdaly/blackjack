@@ -30,9 +30,8 @@ def count_aces(value_array)
   value_array.each do |value|
     count += 1 if value == 'A'
   end
-  count
+  return count
 end
-
 
 def calculate_value(cards)
   value_array = build_values(cards)
@@ -48,10 +47,12 @@ def calculate_value(cards)
     end
   end
   while bust(total)
-    count_aces(value_array).times do
+    count=count_aces(value_array)
+    count.times do
       total -= 10
       return total if total <= 21
     end
+    return total
   end
   return total
 end
