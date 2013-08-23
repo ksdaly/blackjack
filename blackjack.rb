@@ -20,18 +20,22 @@ end
 def calculate_value(cards)
   value_array = cards.map { |card| card.chop }
   face_cards = ['J', 'Q', 'K']
+  ace = 'A'
   total = 0
   value_array.each do |value|
-    if value == 'A'
+    if value == ace
         if total > 10
-          total +=1
+          total += 1
         else
-          total +=11
+          total += 11
         end
     elsif face_cards.include?(value)
       total +=10
     else
       total += value.to_i
+    end
+    if value_array.count(ace) >= 2 && bust(total)
+        total -= 10
     end
   end
   return total
@@ -107,6 +111,9 @@ deck = build_deck
   dealer_cards << deck.pop
 end
 
+
+puts player_cards.inspect
+
 player_total = calculate_value(player_cards)
 dealer_total = calculate_value(dealer_cards)
 
@@ -114,7 +121,7 @@ show_card(player, player_cards[0])
 show_card(player, player_cards[1])
 show_total(player, player_total)
 
-credit_card_scam
+# credit_card_scam
 
 next_turn = nil
 
