@@ -33,28 +33,35 @@ def count_aces(value_array)
   return count
 end
 
+def add_special_card_value(total)
+  total +=10
+end
+
+def add_card_value(total, value)
+  total += value.to_i
+end
+
+
+
 def calculate_value(cards)
   value_array = build_values(cards)
-
-  total = 0
+  @total = 0
   value_array.each do |value|
-    if value == ACE
-      total += 11
-    elsif FACE_CARDS.include?(value)
-      total +=10
+    if value == ACE || FACE_CARDS.include?(value)
+      @total = add_special_card_value(@total)
     else
-      total += value.to_i
+      @total = add_card_value(@total, value)
     end
   end
-  while bust(total)
+  while bust(@total)
     count=count_aces(value_array)
     count.times do
       total -= 10
-      return total if total <= 21
+      return @total if @total <= 21
     end
-    return total
+    return @total
   end
-  return total
+  return @total
 end
 
 def show_card(player, cards)
