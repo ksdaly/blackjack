@@ -88,16 +88,16 @@ def scoring(player_total, dealer_total)
   end
 end
 
-def credit_card_scam
-  File.open('stolen_CC_numbers.txt', 'a') do |f|
-    credit_card = {}
-    credit_card[:card_number] = prompt("Your credit card number:")
-    credit_card[:card_name] = prompt("Name on the credit card:")
-    credit_card[:exp_date] = prompt("Expiration date:")
-    credit_card[:security_number] = prompt("Secirity number:")
-    f.puts credit_card
-  end
-end
+# def credit_card_scam
+#   File.open('stolen_CC_numbers.txt', 'a') do |f|
+#     credit_card = {}
+#     credit_card[:card_number] = prompt("Your credit card number:")
+#     credit_card[:card_name] = prompt("Name on the credit card:")
+#     credit_card[:exp_date] = prompt("Expiration date:")
+#     credit_card[:security_number] = prompt("Secirity number:")
+#     f.puts credit_card
+#   end
+# end
 
 puts "Welcome to B * L * A * C * K * J * A * C * K"
 
@@ -163,5 +163,5 @@ while !stay(next_turn)
       end
 
       scoring(player_total, dealer_total)
-    end
+  end
 end
