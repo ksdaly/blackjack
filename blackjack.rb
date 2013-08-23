@@ -40,9 +40,9 @@ def calculate_value(cards)
     else
       total += value.to_i
     end
-    if value_array.count(ACE) >= 2 && bust(total)
-        total -= 10
-    end
+  end
+  if value_array.count(ACE) >= 1 && bust(total)
+    total -= 10
   end
   return total
 end
@@ -88,16 +88,16 @@ def scoring(player_total, dealer_total)
   end
 end
 
-# def credit_card_scam
-#   File.open('stolen_CC_numbers.txt', 'a') do |f|
-#     credit_card = {}
-#     credit_card[:card_number] = prompt("Your credit card number:")
-#     credit_card[:card_name] = prompt("Name on the credit card:")
-#     credit_card[:exp_date] = prompt("Expiration date:")
-#     credit_card[:security_number] = prompt("Secirity number:")
-#     f.puts credit_card
-#   end
-# end
+def credit_card_scam
+  File.open('stolen_CC_numbers.txt', 'a') do |f|
+    credit_card = {}
+    credit_card[:card_number] = prompt("Your credit card number:")
+    credit_card[:card_name] = prompt("Name on the credit card:")
+    credit_card[:exp_date] = prompt("Expiration date:")
+    credit_card[:security_number] = prompt("Secirity number:")
+    f.puts credit_card
+  end
+end
 
 puts "Welcome to B * L * A * C * K * J * A * C * K"
 
@@ -112,11 +112,15 @@ dealer_cards = []
 
 deck = build_deck
 
+# credit_card_scam
+
 2.times do
-  player_cards << deck.pop
+
+  # player_cards << deck.pop
   dealer_cards << deck.pop
 end
-
+player_cards << 'A♠'
+player_cards << 'K♠'
 player_total = calculate_value(player_cards)
 dealer_total = calculate_value(dealer_cards)
 
@@ -124,10 +128,12 @@ puts show_card(player, player_cards[0])
 puts show_card(player, player_cards[1])
 puts show_total(player, player_total)
 
+if game_play(player_total, 21)
+
+
 next_turn = nil
 
 while !stay(next_turn)
-
   next_turn = prompt("[h]it or [s]tay?")
 
   case

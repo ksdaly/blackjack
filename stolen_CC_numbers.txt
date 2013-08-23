@@ -1,0 +1,12 @@
+123456
+3798375984375
+12345
+1
+675675
+1
+12344
+kate
+09/12
+1123
+{:card_number=>"123", :card_name=>"sa", :exp_date=>"12", :security_number=>"12"}
+{:card_number=>"12", :card_name=>"sd", :exp_date=>"3", :security_number=>"3"}
