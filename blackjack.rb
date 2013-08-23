@@ -55,7 +55,7 @@ def show_card(player, cards)
 end
 
 def show_total(player, total)
-  "#{player}'s total is: #{total}"
+  puts "#{player}'s total is: #{total}"
 end
 
 def prompt(question)
@@ -118,7 +118,7 @@ def play_turn(user, user_hands)
   deal_cards([user_hands], 1)
   show_card(user, [user_hands[-1]])
   total = calculate_value(user_hands)
-  puts show_total(user, total)
+  show_total(user, total)
   total
 end
 
@@ -144,9 +144,7 @@ deal_cards([@player_cards, @dealer_cards], 2)
 @dealer_total = calculate_value(@dealer_cards)
 
 show_card(player, @player_cards)
-
-puts show_total(player, @player_total)
-
+show_total(player, @player_total)
 
 
 next_turn = nil
@@ -168,11 +166,10 @@ while !stay(next_turn)
       end
 
     when stay(next_turn)
-      player_total = calculate_value(@player_cards)
       show_total(player, @player_total)
       puts "Dealer's turn."
       show_card(dealer, @dealer_cards)
-      puts show_total(dealer, @dealer_total)
+      show_total(dealer, @dealer_total)
 
       while game_play(@dealer_total, 17)
         @dealer_total = play_turn(dealer, @dealer_cards)
