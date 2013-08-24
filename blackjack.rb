@@ -24,16 +24,8 @@ def build_values(cards)
   cards.map { |card| card.chop }
 end
 
-def count_aces(value_array)
-  count = 0
-  value_array.each do |value|
-    count += 1 if value == 'A'
-  end
-  return count
-end
-
 def add_card_value(total, value)
-  total +=value
+  total += value
 end
 
 def find_ace
