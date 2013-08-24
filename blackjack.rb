@@ -103,6 +103,10 @@ def bust(score)
   score > 21
 end
 
+def win(score)
+  score == 21
+end
+
 def scoring(player_total, dealer_total)
   if dealer_total > 21
     puts "Dealer busts, player wins."
@@ -138,7 +142,6 @@ end
 
 puts say_hello
 
-
 @correct_input = ["h","s"]
 
 player = "Player"
@@ -159,7 +162,15 @@ show_total(player, @player_total)
 
 next_turn = nil
 
+
+
 while !stay(next_turn)
+
+  if win(@player_total)
+    puts "Player wins."
+    break
+  end
+
   next_turn = prompt("[h]it or [s]tay?")
 
   case
@@ -169,6 +180,9 @@ while !stay(next_turn)
       @player_total = play_turn(player, @player_cards)
       if bust(@player_total)
         puts "Player busts, dealer wins."
+        break
+      elsif win(@player_total)
+        puts "Player wins."
         break
       end
     when stay(next_turn)
