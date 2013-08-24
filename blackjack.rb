@@ -24,7 +24,6 @@ def build_values(cards)
   cards.map { |card| card.chop }
 end
 
-
 def count_aces(value_array)
   count = 0
   value_array.each do |value|
@@ -33,34 +32,38 @@ def count_aces(value_array)
   return count
 end
 
-def add_special_card_value(total)
-  total +=10
-end
-
 def add_card_value(total, value)
-  total += value.to_i
+  total +=value
 end
 
-while bust(@total)
-    count=count_aces(value_array)
-    count.times do
-      total -= 10
-      return @total if @total <= 21
-    end
-    return @total
+def calculate_value_with_aces(total)
+  count = count_aces(@value_array)
+  while bust(total) && count > 0
+    total -= 10
+    count -= 1
   end
+  total
+end
+
+def calculate_initial_value(cards)
+  @value_array = build_values(cards)
+  total = 0
+  @value_array.each do |value|
+    if value == ACE
+      total = add_card_value(total, 11)
+    elsif FACE_CARDS.include?(value)
+      total = add_card_value(total, 10)
+    else
+      total = add_card_value(total, value.to_i)
+    end
+  end
+  total
+end
 
 def calculate_value(cards)
-  value_array = build_values(cards)
-  @total = 0
-  value_array.each do |value|
-    if value == ACE || FACE_CARDS.include?(value)
-      @total = add_special_card_value(@total)
-    else
-      @total = add_card_value(@total, value)
-    end
-  end
-  return @total
+  total = calculate_initial_value(cards)
+  total = calculate_value_with_aces(total)
+  total
 end
 
 def show_card(player, cards)
