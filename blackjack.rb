@@ -36,13 +36,27 @@ def add_card_value(total, value)
   total +=value
 end
 
-def calculate_value_with_aces(total)
-  count = count_aces(@value_array)
-  while bust(total) && count > 0
-    total -= 10
-    count -= 1
+def find_ace
+  @value_array.include?('A')
+end
+
+def hard_total(total)
+  if find_ace
+    total += 10
   end
   total
+end
+
+def soft_total(total)
+  total
+end
+
+def calculate_value_with_aces(total)
+  if hard_total(total) > 21
+    soft_total(total)
+  else
+    hard_total(total)
+  end
 end
 
 def calculate_initial_value(cards)
@@ -50,7 +64,7 @@ def calculate_initial_value(cards)
   total = 0
   @value_array.each do |value|
     if value == ACE
-      total = add_card_value(total, 11)
+      total = add_card_value(total, 1)
     elsif FACE_CARDS.include?(value)
       total = add_card_value(total, 10)
     else
