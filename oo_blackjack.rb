@@ -25,9 +25,20 @@ end
 
 
 class Card
+  def initialize(deck)
+    @card = deck.pop
+  end
+
+  def card_value
+    @card.chop
+  end
 end
 
 class Hand
+  def initialize
+
+  end
+
   def hit(card)
   end
 
@@ -41,11 +52,15 @@ class Hand
   end
 end
 
+
+
 SUITS = ['♠', '♣', '♥', '♦']
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
 puts original_deck = Deck.new
 puts original_deck.inspect
-puts original_deck.pop
+puts next_card = Card.new(original_deck)
+puts next_card.card_value
+
 puts original_deck.inspect
 
