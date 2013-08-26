@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
-# require 'pry'
+require 'pry'
 
 SUITS = ['♠', '♣', '♥', '♦']
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+FACE_CARDS = ['J', 'Q', 'K']
+ACE = 'A'
 
 def build_deck
   deck = []
@@ -17,28 +19,63 @@ def build_deck
   deck.shuffle
 end
 
-def calculate_value(cards)
-  value_array = cards.map { |card| card.chop }
-  face_cards = ['J', 'Q', 'K']
-  total = 0
-  value_array.each do |value|
-    if value == 'A'
-        if total > 10
-          total +=1
-        else
-          total +=11
-        end
-    elsif face_cards.include?(value)
-      total +=10
-    else
-      total += value.to_i
-    end
-  end
-  return total
+
+def build_values(cards)
+  cards.map { |card| card.chop }
 end
 
-def show_card(player, card)
-  puts "#{player} was dealt: #{card}"
+def add_card_value(total, value)
+  total += value
+end
+
+def find_ace
+  @value_array.include?('A')
+end
+
+def hard_total(total)
+  if find_ace
+    total += 10
+  end
+  total
+end
+
+def soft_total(total)
+  total
+end
+
+def calculate_value_with_aces(total)
+  if hard_total(total) > 21
+    soft_total(total)
+  else
+    hard_total(total)
+  end
+end
+
+def calculate_initial_value(cards)
+  @value_array = build_values(cards)
+  total = 0
+  @value_array.each do |value|
+    if value == ACE
+      total = add_card_value(total, 1)
+    elsif FACE_CARDS.include?(value)
+      total = add_card_value(total, 10)
+    else
+      total = add_card_value(total, value.to_i)
+    end
+  end
+  total
+end
+
+def calculate_value(cards)
+  total = calculate_initial_value(cards)
+  total = calculate_value_with_aces(total)
+  total
+end
+
+def show_card(player, cards)
+  cards.each do |card|
+    puts "#{player} was dealt: #{card}"
+  end
 end
 
 def show_total(player, total)
@@ -54,109 +91,108 @@ def game_play (score, limit)
   score < limit
 end
 
-def credit_card_scam
-  File.open('stolen_CC_numbers.txt', 'a') do |f|
-  f.puts prompt("Please submit your credit card number information to continue:")
+def hit(user_input)
+  user_input == "h"
+end
+
+def stay(user_input)
+  user_input == "s"
+end
+
+def bust(score)
+  score > 21
+end
+
+def win(score)
+  score == 21
+end
+
+def scoring(player_total, dealer_total)
+  if dealer_total > 21
+    puts "Dealer busts, player wins."
+  elsif player_total > dealer_total
+    puts "Player wins."
+  elsif dealer_total > player_total
+    puts "Dealer wins, player loses."
+  elsif player_total == dealer_total
+    puts "It's a tie... Just kidding, dealer always wins."
   end
 end
 
-correct_input = ["h","s"]
+def say_hello
+  "Welcome to B * L * A * C * K * J * A * C * K"
+end
+
+def deal_cards(user_hands, cards)
+  cards.times do
+    user_hands.each do |hand|
+      hand << @deck.pop
+    end
+  end
+end
+
+def play_turn(user, user_hands)
+  deal_cards([user_hands], 1)
+  show_card(user, [user_hands[-1]])
+  total = calculate_value(user_hands)
+  show_total(user, total)
+  total
+end
+
+
+puts say_hello
+
+@correct_input = ["h","s"]
 
 player = "Player"
 dealer = "Dealer"
 
-player_cards = []
-dealer_cards = []
+@player_cards = []
+@dealer_cards = []
 
-deck = build_deck
+@deck = build_deck
 
+deal_cards([@player_cards, @dealer_cards], 2)
 
-# Player is dealt a card (x2)
+@player_total = calculate_value(@player_cards)
+@dealer_total = calculate_value(@dealer_cards)
 
-2.times do
-  player_cards << deck.pop
-  dealer_cards << deck.pop
-end
-
-# Display inital hand
-
-player_total = calculate_value(player_cards)
-dealer_total = calculate_value(dealer_cards)
-
-show_card(player, player_cards[0])
-show_card(player, player_cards[1])
-show_total(player, player_total)
-
-# Prompt player to hit or stand
-
-credit_card_scam
+show_card(player, @player_cards)
+show_total(player, @player_total)
 
 next_turn = nil
-while next_turn != "s"
-  next_turn = prompt("[h]it or [s]tay?")
-# If input is invalid (neither hit or stand) notify and reprompt
-  if !correct_input.include?(next_turn)
-    puts "Invalid input, please put either h for hit or s for stay."
-  elsif next_turn == "h"
-# If player hits deal another card
-    new_card = deck.pop
-    player_cards << new_card
-    show_card(player, player_cards[-1])
-# Display player's recalculated score
-    player_total = calculate_value(player_cards)
-    show_total(player, player_total)
-    puts ''
-# If player busts then exit game
-      if player_total > 21
-        puts "Player bust"
-        puts "Dealer wins"
-        break
-      end
-  elsif next_turn == "s"
-  # If player stands
 
-    # Display player's recalculated score
-    player_total = calculate_value(player_cards)
-    show_total(player, player_total)
- # End players turn and switch to dealer
- # Dealer is dealt 2 cards
-    puts ''
-    puts "Dealer's turn"
-    show_card(dealer, dealer_cards[0])
-    show_card(dealer, dealer_cards[1])
-    show_total(dealer, dealer_total)
 
-    while game_play(dealer_total, 17)
-      new_card = deck.pop
-      dealer_cards << new_card
-      show_card(dealer, dealer_cards[-1])
-      dealer_total = calculate_value(dealer_cards)
-      # Display player's score after they hit or stand
-      show_total(dealer, dealer_total)
-      puts ''
-    end
-    if dealer_total >21
-      puts "Dealer busts, player wins"
-    elsif dealer_total > player_total
-      puts "Dealer wins"
-    elsif dealer_total == player_total
-      puts "It's a tie!"
-    end
+
+while !stay(next_turn)
+
+  if win(@player_total)
+    puts "Player wins."
+    break
   end
 
+  next_turn = prompt("[h]it or [s]tay?")
+
+  case
+    when !@correct_input.include?(next_turn)
+      puts "Invalid input, please put either 'h' for hit or 's' for stay."
+    when hit(next_turn)
+      @player_total = play_turn(player, @player_cards)
+      if bust(@player_total)
+        puts "Player busts, dealer wins."
+        break
+      elsif win(@player_total)
+        puts "Player wins."
+        break
+      end
+    when stay(next_turn)
+      show_total(player, @player_total)
+      puts "Dealer's turn."
+      show_card(dealer, @dealer_cards)
+      show_total(dealer, @dealer_total)
+      while game_play(@dealer_total, 17)
+        @dealer_total = play_turn(dealer, @dealer_cards)
+      end
+      scoring(@player_total, @dealer_total)
+  end
 end
-
-
-
-
-      # If dealer score is less than 17
-
-        # Continue hitting until score over 17
-
-      # If dealer score is greater than 21
-
-        # Dealer loses
-
-# If score equals 21, they win
-
-# If score less than 21, player with the higher score wins
