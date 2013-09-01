@@ -52,7 +52,6 @@ class Card
   def suit
     @suit
   end
-
 end
 
 class Hand
@@ -62,12 +61,8 @@ class Hand
     @cards = []
   end
 
-  def hit(user_hands, cards)
-    cards.times do
-      user_hands.each do |card|
-        @cards << card
-      end
-    end
+  def hit(card)
+    @cards << card
   end
 
   def stay
