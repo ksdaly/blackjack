@@ -35,7 +35,7 @@ class Card
     @suit = suit
   end
 
-  def value
+  def numeric_value
     if ['J', 'Q', 'K'].include?(@value)
       10
     elsif ['A'].include?(@value)
@@ -45,12 +45,21 @@ class Card
     end
   end
 
+  def value
+    @value
+  end
+
   def suit
     @suit
   end
+
+  # def display_card
+  #   puts card.value + card.suit
+  # end
 end
 
 class Hand
+  attr_reader :cards
   def initialize(name)
     @name = name
     @cards = []
@@ -64,12 +73,12 @@ class Hand
   end
 
   def score
-    @cards.map(&:value)
+    @cards.map(&:numeric_value)
     score = 0
     @cards.each do |card|
-      score += card.value
+      score += card.numeric_value
     end
-    if @cards.map(&:value).include?(1) && score + 10 <= 21
+    if @cards.map(&:numeric_value).include?(1) && score + 10 <= 21
       score + 10
     else
       score
@@ -96,20 +105,27 @@ class Game
     @player_hand = Hand.new('player')
     @dealer_hand = Hand.new('dealer')
     @player_hand.hit(@deck.next_card)
+    show_hand(@player_hand)
     @player_hand.hit(@deck.next_card)
-    @dealer_hand.hit(@deck.next_card)
-    @dealer_hand.hit(@deck.next_card)
+    show_hand(@player_hand)
 
     puts "Player score: #{@player_hand.score}"
   end
 
+  def show_hand(name_hand)
+    card = name_hand.cards.last
+    puts card.value + card.suit
+  end
+
   def play_choice
     while true
-      puts "Hit or stand (H/S)"
+      print "Hit or stand (H/S): "
       play = gets.chomp
+      puts
 
       if play.upcase == 'H'
         @player_hand.hit(@deck.next_card)
+        show_hand(@player_hand)
         puts "Player score: #{@player_hand.score}"
       elsif play.upcase == 'S'
         break
@@ -119,9 +135,15 @@ class Game
   end
 
   def play_as_dealer
+    @dealer_hand.hit(@deck.next_card)
+    show_hand(@dealer_hand)
+    @dealer_hand.hit(@deck.next_card)
+    show_hand(@dealer_hand)
     puts "Dealer's score: #{@dealer_hand.score}"
+    puts
     while @dealer_hand.score < 17
       @dealer_hand.hit(@deck.next_card)
+      show_hand(@dealer_hand)
       puts "Dealer's score: #{@dealer_hand.score}"
       @dealer_hand.busted?(@dealer_hand.score) == false
     end
