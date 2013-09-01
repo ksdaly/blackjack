@@ -140,7 +140,7 @@ end
 
 
 game = Game.new
-puts game.deal_hand
+game.deal_hand
 game.play_choice
 game.play_as_dealer
 game.determine_winner
