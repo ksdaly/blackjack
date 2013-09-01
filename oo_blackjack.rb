@@ -53,9 +53,6 @@ class Card
     @suit
   end
 
-  # def display_card
-  #   puts card.value + card.suit
-  # end
 end
 
 class Hand
@@ -87,7 +84,7 @@ class Hand
 
   def busted?(score)
     if score > 21
-      puts "Busted"
+      puts "Busted!"
       exit
     else
       return false
@@ -124,9 +121,7 @@ class Game
       puts
 
       if play.upcase == 'H'
-        @player_hand.hit(@deck.next_card)
-        show_hand(@player_hand)
-        puts "Player score: #{@player_hand.score}"
+        play_turn(@player_hand, "Player")
       elsif play.upcase == 'S'
         break
       end
@@ -141,12 +136,21 @@ class Game
     show_hand(@dealer_hand)
     puts "Dealer's score: #{@dealer_hand.score}"
     puts
+    # play_turn(@dealer_hand, "Dealer")
     while @dealer_hand.score < 17
-      @dealer_hand.hit(@deck.next_card)
-      show_hand(@dealer_hand)
-      puts "Dealer's score: #{@dealer_hand.score}"
+      # @dealer_hand.hit(@deck.next_card)
+      # show_hand(@dealer_hand)
+      # puts "Dealer's score: #{@dealer_hand.score}"
+      play_turn(@dealer_hand, "Dealer")
+
       @dealer_hand.busted?(@dealer_hand.score) == false
     end
+  end
+
+  def play_turn(name_hand, name)
+    name_hand.hit(@deck.next_card)
+    show_hand(name_hand)
+    puts "#{name}'s score: #{name_hand.score}"
   end
 
   def determine_winner
