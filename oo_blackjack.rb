@@ -62,8 +62,12 @@ class Hand
     @cards = []
   end
 
-  def hit(card)
-    @cards << card
+  def hit(user_hands, cards)
+    cards.times do
+      user_hands.each do |card|
+        @cards << card
+      end
+    end
   end
 
   def stay
@@ -136,13 +140,8 @@ class Game
     show_hand(@dealer_hand)
     puts "Dealer's score: #{@dealer_hand.score}"
     puts
-    # play_turn(@dealer_hand, "Dealer")
     while @dealer_hand.score < 17
-      # @dealer_hand.hit(@deck.next_card)
-      # show_hand(@dealer_hand)
-      # puts "Dealer's score: #{@dealer_hand.score}"
       play_turn(@dealer_hand, "Dealer")
-
       @dealer_hand.busted?(@dealer_hand.score) == false
     end
   end
