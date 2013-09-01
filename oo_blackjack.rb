@@ -26,12 +26,10 @@ class Deck
   def shuffle
     @cards.shuffle!
   end
-
 end
 
 
 class Card
-
   def initialize(value, suit)
     @value = value
     @suit = suit
@@ -50,7 +48,6 @@ class Card
   def suit
     @suit
   end
-
 end
 
 class Hand
@@ -64,10 +61,11 @@ class Hand
   end
 
   def stay
+
   end
 
   def score
-    puts @cards.map(&:value)
+    @cards.map(&:value)
     score = 0
     @cards.each do |card|
       score += card.value
@@ -77,10 +75,15 @@ class Hand
     else
       score
     end
-
   end
 
-  def busted?
+  def busted?(score)
+    if score > 21
+      puts "Busted"
+      exit
+    else
+      return false
+    end
   end
 end
 
@@ -95,11 +98,50 @@ class Game
     @dealer_hand = Hand.new('dealer')
     @player_hand.hit(@deck.next_card)
     @player_hand.hit(@deck.next_card)
-    puts @player_hand.score
+    @dealer_hand.hit(@deck.next_card)
+    @dealer_hand.hit(@deck.next_card)
+
+    puts "Player score: #{@player_hand.score}"
+  end
+
+  def play_choice
+    while true
+      puts "Hit or stand (H/S)"
+      play = gets.chomp
+
+      if play.upcase == 'H'
+        @player_hand.hit(@deck.next_card)
+        puts "Player score: #{@player_hand.score}"
+      elsif play.upcase == 'S'
+        break
+      end
+      @player_hand.busted?(@player_hand.score) == false
+    end
+  end
+
+  def play_as_dealer
+    puts "Dealer's score: #{@dealer_hand.score}"
+    while @dealer_hand.score < 17
+      @dealer_hand.hit(@deck.next_card)
+      puts "Dealer's score: #{@dealer_hand.score}"
+      @dealer_hand.busted?(@dealer_hand.score) == false
+    end
+  end
+
+  def determine_winner
+    if @player_hand.score == @dealer_hand.score
+      puts "It's a tie... Just kidding, dealer always wins"
+    elsif @player_hand.score > @dealer_hand.score
+      puts "Player wins"
+    elsif @player_hand.score < @dealer_hand.score
+      puts "Dealer wins"
+    end
   end
 end
 
 
 game = Game.new
 game.deal_hand
-
+game.play_choice
+game.play_as_dealer
+game.determine_winner
