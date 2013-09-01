@@ -19,8 +19,14 @@ class Deck
     end
   end
 
-  def next_card
-    @cards.pop
+  def next_card(count)
+    card_output = []
+    count.times do
+
+      card_output << @cards.pop
+    end
+    card_output
+
   end
 
   def shuffle
@@ -53,9 +59,6 @@ class Card
     @suit
   end
 
-  # def display_card
-  #   puts card.value + card.suit
-  # end
 end
 
 class Hand
@@ -65,8 +68,10 @@ class Hand
     @cards = []
   end
 
-  def hit(card)
+  def hit(cards)
+    cards.each do |card|
     @cards << card
+  end
   end
 
   def stay
@@ -100,21 +105,31 @@ class Game
     @deck = Deck.new
   end
 
+  def play_turn(name_hand, name)
+    name_hand.hit(@deck.next_card(1))
+    show_hand(name_hand, -1,  name)
+    puts "#{name}'s score: #{name_hand.score}"
+  end
+
   def deal_hand
     @deck.shuffle
     @player_hand = Hand.new('player')
     @dealer_hand = Hand.new('dealer')
-    @player_hand.hit(@deck.next_card)
-    show_hand(@player_hand)
-    @player_hand.hit(@deck.next_card)
-    show_hand(@player_hand)
-
+    @player_hand.hit(@deck.next_card(2))
+    @dealer_hand.hit(@deck.next_card(2))
+    show_hand(@player_hand, 0..1, "Player")
     puts "Player score: #{@player_hand.score}"
   end
 
-  def show_hand(name_hand)
-    card = name_hand.cards.last
-    puts card.value + card.suit
+  def show_hand(name_hand, range, name)
+    cards = name_hand.cards[range]
+    if cards.is_a?(Array)
+      cards.each do |card|
+        puts "#{name} was dealt: #{card.value + card.suit}"
+      end
+    else
+      puts "#{name} was dealt: #{cards.value + cards.suit}"
+    end
   end
 
   def play_choice
@@ -122,11 +137,8 @@ class Game
       print "Hit or stand (H/S): "
       play = gets.chomp
       puts
-
       if play.upcase == 'H'
-        @player_hand.hit(@deck.next_card)
-        show_hand(@player_hand)
-        puts "Player score: #{@player_hand.score}"
+        play_turn(@player_hand, "Player")
       elsif play.upcase == 'S'
         break
       end
@@ -135,16 +147,11 @@ class Game
   end
 
   def play_as_dealer
-    @dealer_hand.hit(@deck.next_card)
-    show_hand(@dealer_hand)
-    @dealer_hand.hit(@deck.next_card)
-    show_hand(@dealer_hand)
+    show_hand(@dealer_hand, 0..1,  "Dealer")
     puts "Dealer's score: #{@dealer_hand.score}"
     puts
     while @dealer_hand.score < 17
-      @dealer_hand.hit(@deck.next_card)
-      show_hand(@dealer_hand)
-      puts "Dealer's score: #{@dealer_hand.score}"
+      play_turn(@dealer_hand, "Dealer")
       @dealer_hand.busted?(@dealer_hand.score) == false
     end
   end
