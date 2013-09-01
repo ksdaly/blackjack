@@ -61,7 +61,6 @@ class Hand
   end
 
   def stay
-
   end
 
   def score
@@ -71,7 +70,7 @@ class Hand
       score += card.value
     end
     if @cards.map(&:value).include?(1) && score + 10 <= 21
-      score +10
+      score + 10
     else
       score
     end
@@ -141,7 +140,7 @@ end
 
 
 game = Game.new
-game.deal_hand
+puts game.deal_hand
 game.play_choice
 game.play_as_dealer
 game.determine_winner
